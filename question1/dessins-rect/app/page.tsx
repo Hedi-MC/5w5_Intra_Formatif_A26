@@ -38,6 +38,10 @@ export default function Home() {
   async function afficherEvents2(){
     clearShapes();
     // TODO: Il faut appeler le serveur pour obtenir la séquence d'événements 2 (que vous devez créer sur le serveur)
+    const response = await axios.get("http://localhost:5269/api/Dessins/GetDrawing2")
+    console.log(response)
+
+      await applyEvents(response.data);
   }
 
   async function applyEvents(event:any){
@@ -58,9 +62,19 @@ export default function Home() {
       drawStar(event.x, event.y, event.innerRadius);
       await wait(1);
       break;
+
+      case "Wait":
+      await wait(event.secondes);
+      break;
+
+    case "ChangeColor":
+      currentColor.current = event.color;
+      break;
     }
-    if(event.events){
-      for(let e of event.events){
+
+
+    if(event.drawingEvents){
+      for(let e of event.drawingEvents){
         await applyEvents(e);
       }
     }

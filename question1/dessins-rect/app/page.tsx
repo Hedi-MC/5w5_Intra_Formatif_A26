@@ -27,6 +27,12 @@ export default function Home() {
   async function afficherEvents1(){
     clearShapes();
     // TODO: Il faut appeler le serveur pour obtenir l'event retourné
+    const response = await axios.get("http://localhost:5269/api/Dessins/GetDrawing1")
+    console.log(response)
+
+      await applyEvents(response.data);
+    
+  
   }
 
   async function afficherEvents2(){
@@ -36,7 +42,30 @@ export default function Home() {
 
   async function applyEvents(event:any){
     // TODO: Il faut traiter les événements reçus du serveur et dessiner les formes correspondantes
+    console.log("ApplyingEvent: " + event.type);
+    switch(event.type){
+      case "Square":
+      drawSquare(event.x, event.y);
+      await wait(1);
+      break;
+      
+    case "Circle":
+      drawCircle(event.x, event.y);
+      await wait(1);
+      break;
+    
+    case "Star":
+      drawStar(event.x, event.y, event.innerRadius);
+      await wait(1);
+      break;
+    }
+    if(event.events){
+      for(let e of event.events){
+        await applyEvents(e);
+      }
+    }
   }
+  
 
   // ATTENTION: Les méthodes suivantes n'ont pas besoin d'être modifiées pour répondre à la question
 
